@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="google-site-verification" content="j6z_C1mXAAu0i_3DBg-QTy0x0rXqHyI5RJSfzHoWFmI" />
+  
+  <meta name="description" content="Explore Apsara Bazaar – your ultimate portal to Bollywood glamour. Enjoy exclusive behind-the-scenes updates and celebrity news on top Indian actresses." />
+  <meta name="keywords" content="Apsara Bazaar, Bollywood, Indian Actresses, Celebrity News, Bollywood Updates, Behind the Scenes, Kiara Advani, Disha Patani, Yami Gautam, Anushka Sharma, Bollywood Insider" />
+  
+  <meta name="robots" content="index, follow" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <title>Apsara Baazar</title>
+  <link rel="shortcut icon" href="/icons/logo.png" type="image/x-icon">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="stylesheet" href="/css/index.css" />
+  <link rel="stylesheet" href="/css/add-index.css">
+  <link rel="stylesheet" href="/css/post-structure.css">
+  <link rel="dns-prefetch" href="https://fonts.gstatic.com">
+  <style>
+    .dropdown-wrapper{
+      position: relative;
+    z-index: 9999;
+    background-color: transparent;
+    height: 32px;
+    }
+    .dropdown {
+      display: none;
+    position: absolute;
+    top: 42px;
+    left: -30px;
+    background: #2a3236;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.8);
+    border-radius: 8px;
+    min-width: 95vw;
+  
+    }
+
+    .dropdown.show {
+      display: block;
+    }
+
+    .dropdown-item {
+      padding: 8px 12px;
+    cursor: pointer;
+    position: relative;
+    }
+
+    .dropdown-item:hover {
+      background-color: #f0f0f0;
+    }
+    .radio{
+      position: absolute;
+    right: 14px;
+    top: 12px;
+    }
+    
+  </style>
+
+</head>
+
+<body>
+
+
+
+  <nav class="nav">
+    <div class="l-nav">&nbsp; Apsara Bazaar</div>
+    <div class="r-nav">
+      <% if (!user) { %>
+      <div><a href="/auth/login">Login</a></div>
+      <% } else { %>
+      <div class="showmenu">
+        <button class="add-post" onclick="window.location.href='/auth/create-post'">
+          <img src="/icons/add.gif" alt="" width="44px" />
+        </button>
+        
+      </div>
+      <% } %>
+    </div>
+  </nav>
+  
+  
+  <% if (user) { %> 
+    <div class="active-user">
+      <div class="active-user-logo"></div>
+      <p id="user-numb">&nbsp;<%=nuser%> online</p>
+    </div>
+
+   
+
+  <div class="filters">
+    <div class="category" id="toggleMenu">
+      <span class="money-need" style="width: 24px; font-size: 26px;">tune</span>
+    </div>
+
+    <div class="dropdown-wrapper">
+      <div class="dropdown" id="dropdownMenu">
+        <div class="dropdown-item s-1" onclick="selectOption('New')">
+          <input type="radio" name="option" class="radio" id="new" checked > New
+        </div>
+        <div class="dropdown-item s-5" onclick="selectOption('My Feed')" style="display: none;">
+          <input type="radio" name="option" class="radio" id="myfeed" > My Feed
+        </div>
+        <div class="dropdown-item s-2" onclick="selectOption('Hot')">
+          <input type="radio" name="option" class="radio" id="hot"> Hot
+        </div>
+        <div class="dropdown-item s-3" onclick="selectOption('Top')">
+          <input type="radio" name="option" class="radio" id="top" > Top
+        </div>
+        <div class="dropdown-item s-4" onclick="selectOption('Rising')">
+          <input type="radio" name="option" class="radio" id="rising"> Rising
+        </div>
+      </div>
+
+    </div>
+    
+
+    <div class="tags-container">
+    <div class="tags">
+      <button class="tag t-1" data-tag="" style="background: #2a3236;">All</button>
+      <button class="tag t-2" data-tag="Bazaar">Bazaar</button>
+      <button class="tag t-3" data-tag="Admire Apsara">Admire Apsara</button>
+      <button class="tag t-4" data-tag="Bikini Shots">Bikini Shots</button>
+      <button class="tag t-5" data-tag="Busty Boobies">Busty Boobies</button>
+      <button class="tag t-6" data-tag="Influencers">Influencers</button>
+      <button class="tag t-7" data-tag="Kinks and Fantasies">Kinks & Fantasies</button>
+      <button class="tag t-8" data-tag="Apsara Fakes">Apsara Fakes</button>
+      <button class="tag t-9" data-tag="Misc">Misc</button>
+    </div>
+    </div>
+  </div>
+
+  <% } %>
+  
+
+
+  <div class="content" id="posts">
+    <!-- Placeholder for posts. -->
+  </div>
+
+  <%- include('components/footer-structure') %>
+
+ 
+
+  <!-- Full-Screen Image Display (simplified) -->
+  <div id="fullScreenImageContainer" class="image-overlay" onclick="closeFullscreenImage()">
+    <img id="fullScreenImage" src="" alt="Full screen view" />
+  </div>
+  <!-- NSFW Warning Modal -->
+  <div id="nsfwWarningModal" class="modal">
+    <div class="modal-content">
+      <h3>Warning: NSFW Content</h3>
+      <p>This community contains content that may be considered NSFW.It inclueds kinks and fantasies and have no relation with real world.There is no attempt to harm or disrespect any individual thorugh our content .Please proceed with caution.</p>
+      <button onclick="closeModal(),install()">I Understand</button>
+    </div>
+  </div>
+
+  <%- include('components/loader') %>
+  <%- include('components/setupjs') %>
+
+
+<script src="/js/index.js"></script>
+<script src="/js/post-call.js"></script>
+<script src="/js/posts-features.js"></script>
+<script>
+    /* =======================
+       Utility Functions
+    ======================= */
+    //Time Shower
+function timeAgo(isoDate) {
+  const timeUnits = [
+    { label: "year", seconds: 31536000 },
+    { label: "month", seconds: 2592000 },
+    { label: "day", seconds: 86400 },
+    { label: "hr", seconds: 3600 },
+    { label: "min", seconds: 60 }
+  ];
+  const now = new Date();
+  const past = new Date(isoDate);
+  const diffInSeconds = Math.floor((now - past) / 1000);
+  for (let unit of timeUnits) {
+    const interval = Math.floor(diffInSeconds / unit.seconds);
+    if (interval >= 1) {
+      return `${interval} ${unit.label}${interval > 1 ? "s" : ""} ago`;
+    }
+  }
+  return "just now";
+}
+  
+    // Set up tag click listeners (if logged in)
+    if (isLoggedIn) {
+    const tagMappings = [
+  { selector: ".t-1", tag: "" },
+  { selector: ".t-2", tag: "Bazaar" },
+  { selector: ".t-3", tag: "Admire Apsara" },
+  { selector: ".t-4", tag: "Bikini Shots" },
+  { selector: ".t-5", tag: "Busty Boobies" },
+  { selector: ".t-6", tag: "Influencers" },
+  { selector: ".t-7", tag: "Kinks and Fantasies" },
+  { selector: ".t-8", tag: "Apsara Fakes" },
+  { selector: ".t-9", tag: "Misc" },
+  { selector: ".s-1", tag: "" },
+  { selector: ".s-2", tag: "Hot" },
+  { selector: ".s-3", tag: "Top" },
+  { selector: ".s-4", tag: "Rising" },
+  { selector: ".s-5", tag: "My Feed" }
+];
+
+    tagMappings.forEach(mapping => {
+      const elem = document.querySelector(mapping.selector);
+      if (elem) {
+        elem.addEventListener("click", () => handleTagClick(mapping.tag));
+      }
+    });
+  }
+
+    /* =======================
+       Dropdown Menu
+    ======================= */
+    function initDropdownMenu() {
+      const toggleMenu = document.getElementById('toggleMenu');
+      const dropdownMenu = document.getElementById('dropdownMenu');
+      if (!toggleMenu || !dropdownMenu) {
+        console.log("Dropdown menu elements not found.");
+        return;
+      }
+      toggleMenu.addEventListener('click', () => {
+    dropdownMenu.classList.toggle('show'); // Toggle the dropdown menu
+  });
+      document.addEventListener('click', (e) => {
+        if (!toggleMenu.contains(e.target) && !dropdownMenu.contains(e.target)) {
+          dropdownMenu.classList.remove('show');
+        }
+      }); 
+
+      
+    }
+    
+    /* =======================
+       Like and Comment Handlers
+    ======================= */
+    function addLike(postId) {
+      const likesElem = document.getElementById(`like-count-${postId}`);
+      const likeIconElem = document.getElementById(`like-icon-${postId}`);
+      let currentLikes = parseInt(likesElem.innerHTML, 10) || 0;
+      if (isLoggedIn) {
+        // Optimistically update the UI
+        likesElem.innerHTML = currentLikes + 1;
+        likeIconElem.src = "/icons/liked.png";
+      }
+      fetch(`/post/addlike/${postId}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+      })
+        .then(response =>
+          response.json().then(data => ({ status: response.status, body: data }))
+        )
+        .then(({ status, body }) => {
+          if (status === 200) {
+            // Like successfully added
+            likeIconElem.src = "/icons/liked.png";
+          } else if (status === 401) {
+            window.location.href = "/auth/login";
+          } else if (status === 400) {
+            alert(body.message || 'You have already liked this post.');
+          } else {
+            console.error('Unexpected error:', body);
+            alert('An error occurred while adding the like.');
+          }
+        })
+        .catch(error => console.error('Error:', error));
+    }
+  
+    function fetchComments(postId) {
+      document.getElementById('loading-overlay').style.display = 'flex';
+      fetch(`/post/comments/${postId}`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+      })
+        .then(response => {
+          if (response.status === 401) {
+            window.location.href = "/auth/login";
+            return;
+          } else if (response.status === 404) {
+            alert("Post not found.");
+            return;
+          } else if (!response.ok) {
+            alert("An error occurred while fetching comments.");
+            return;
+          }
+          window.location.href = `/post/comments/${postId}`;
+        })
+        .catch(error => console.error('Error:', error));
+    }
+  
+    /* =======================
+       Posts & Infinite Scroll
+    ======================= */
+  // Fetch and render posts
+async function fetchAndRenderPosts(tag = "") {
+  if (isLoading) return;
+  isLoading = true;
+
+  // Cancel any previous request and create a new abort controller
+  abortController.abort();
+  abortController = new AbortController();
+
+  try {
+    console.log("0");
+    // Fetch posts from the API using the current skipCount and abort signal
+    const response = await fetch(`/api/posts?skip=${skipCount}&limit=${POSTS_PER_PAGE}&tag=${encodeURIComponent(tag)}`, {
+      signal: abortController.signal,
+    });
+    if (!response.ok) throw new Error("Failed to fetch posts");
+
+    const data = await response.json();
+    console.log(data);
+  
+    // Sort posts by creation date in descending order
+    data.posts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+    // Hide loading message (if present)
+    const loadingMessage = document.getElementById("loadingMessage");
+    if (loadingMessage) loadingMessage.style.display = "none";
+    console.log("1");
+
+    // Render each post
+    data.posts.forEach(post => {
+      postsContainer.appendChild(renderPost(post));
+    });
+    console.log("2");
+     // Loop through each post and add the author badge
+     data.posts.forEach(async post => {
+       await AddAuthorBadge(post.author, post._id);
+     });
+     console.log("3")
+
+
+    // Update skip count and manage the load more button
+    skipCount += data.posts.length;
+    manageLoadMoreButton(data.posts.length);
+  } catch (error) {
+    // Ignore abort errors; for other errors, log and display an error message
+    if (error.name !== "AbortError") {
+      console.error("Error fetching posts:", error);
+      postsContainer.innerHTML = "<p>Failed to load posts. Please try again later.</p>";
+    }
+  } finally {
+    isLoading = false;
+    document.getElementById('loading-overlay').style.display = 'none';
+  }
+}
+
+    /* =======================
+       Initialization
+    ======================= */
+    // Injected server variables – ensure userLikes is a proper JSON string
+    
+    // Initialize all modules after DOM is loaded
+    document.addEventListener("DOMContentLoaded", function () {
+      initDropdownMenu();
+      fetchAndRenderPosts();
+      InitializeFooter()
+      CheckUpdates();
+    });
+    // Expose functions used in inline HTML (assumed to be defined elsewhere)
+    window.addLike = addLike;
+    window.fetchComments = fetchComments;
+
+ 
+  function selectOption(option) {
+    document.getElementById('hot').checked = option === 'Hot';
+    document.getElementById('top').checked = option === 'Top';
+    document.getElementById('myfeed').checked = option === 'My Feed';
+    document.getElementById('rising').checked = option === 'Rising';
+    dropdownMenu.classList.remove('show');
+  }
+ 
+  
+
+  function InitializeFooter(){
+      document.getElementById('home-btn').addEventListener('click', function() {
+    // Show the loading overlay
+    document.getElementById('loading-overlay').style.display = 'flex';
+    setTimeout(function() {
+      window.location.href = '/';
+    }, 750);  // 100ms delay so the overlay appears
+  });
+    document.getElementById('home-btn').innerHTML=` <svg rpl="" fill="currentColor" height="24" icon-name="home-fill" viewBox="0 0 20 20" width="24" xmlns="http://www.w3.org/2000/svg"> <path d="m19.724 6.765-9.08-6.11A1.115 1.115 0 0 0 9.368.647L.276 6.765a.623.623 0 0 0 .35 1.141h.444v10.001c.001.278.113.544.31.74.196.195.462.304.739.303h5.16a.704.704 0 0 0 .706-.707v-4.507c0-.76 1.138-1.475 2.02-1.475.882 0 2.02.715 2.02 1.475v4.507a.71.71 0 0 0 .707.707h5.16c.274-.001.538-.112.732-.307.195-.195.305-.46.306-.736v-10h.445a.618.618 0 0 0 .598-.44.625.625 0 0 0-.25-.702Z"></path>
+         </svg>`
+
+         if(isLoggedIn){
+
+          document.getElementById('search-btn').addEventListener('click', function() {
+    // Show the loading overlay
+    document.getElementById('loading-overlay').style.display = 'flex';
+    setTimeout(function() {
+      window.location.href = '/user/search';
+    }, 750);  // 100ms delay so the overlay appears
+  });
+
+
+  document.getElementById('chat-btn').addEventListener('click', function() {
+    // Show the loading overlay
+    document.getElementById('loading-overlay').style.display = 'flex';
+    setTimeout(function() {
+      window.location.href = '/chats';
+    }, 750);  // 100ms delay so the overlay appears
+  });
+
+  document.getElementById('notification-btn').addEventListener('click', function() {
+    // Show the loading overlay
+    document.getElementById('loading-overlay').style.display = 'flex';
+    setTimeout(function() {
+      window.location.href = '/user/notifications';
+    }, 750);  // 100ms delay so the overlay appears
+  });
+
+
+ }
+
+
+
+    }
+
+  
+    function CheckUpdates() {
+  // now this is valid JS: a single-quoted string literal
+  const notifications = JSON.parse('<%- JSON.stringify(user.notifications) %>');
+  console.log(notifications);
+
+  const hasUnread = notifications.some(n => n.status === 'Unread');
+  const el = document.getElementById('NewNotify');
+  el.style.display = hasUnread ? 'block' : 'none';
+}
+
+ </script>
+  
+</body>
+
+</html>

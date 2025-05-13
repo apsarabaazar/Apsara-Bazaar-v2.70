@@ -1,0 +1,21 @@
+<script>
+    let userID = "<%= user ? user.username : 'null' %>";
+    
+    const isLoggedIn = userID !== "null";
+    let userLikes = [];
+    let userSaves=[]
+    let userFollowing=[]
+    try {
+      userLikes = "<%= user && user.likes ? user.likes : [] %>";
+      userSaves= "<%= user && user.saves ? user.saves : [] %>";
+      userFollowing="<%= user && user.following ? user.following : [] %>"
+    } catch (e) {
+      console.error("Error parsing userLikes:", e);
+    }
+    // If the user is not logged in, adjust layout accordingly
+    if (!isLoggedIn) {
+      const postsContainer = document.getElementById("posts");
+      if (postsContainer) postsContainer.style.marginTop = "60px";
+    }
+
+</script>

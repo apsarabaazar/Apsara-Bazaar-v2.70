@@ -1,0 +1,254 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Apsara Bazaar - Notifications</title>
+  <link rel="shortcut icon" href="/icons/logo.png" type="image/x-icon">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/index.css" />
+  <meta name="description" content="Explore Apsara Bazaar – your ultimate portal to Bollywood glamour. Enjoy exclusive behind-the-scenes updates and celebrity news on top Indian actresses." />
+  <meta name="keywords" content="Apsara Bazaar, Bollywood, Indian Actresses, Celebrity News, Bollywood Updates, Behind the Scenes, Kiara Advani, Disha Patani, Yami Gautam, Anushka Sharma, Bollywood Insider" />
+  <style>
+    /* Reset & base */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Arial, sans-serif;
+      background: #0e1113;
+      color: white;
+      line-height: 1.6;
+    }
+    h2 {
+      font-size: 1.25rem;
+      margin-top: 1.5rem;
+      margin-bottom: .75rem;
+      padding-bottom: .25rem;
+      font-family: Bitter;
+    }
+
+    /* Notification list */
+    #notifications ul {
+      list-style: none;
+    }
+    #notifications li {
+        display: flex;
+    align-items: center;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    padding: 4px 12px;
+    transition: background 0.2s;
+    font-family: Bitter;
+    }
+    /* Image / button container */
+    .notif-media {
+        margin-right: 8px;
+    height: 60px;
+    width: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    }
+    .notif-media img {
+        width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 16px;
+    }
+    .notif-media button {
+      display: inline-block;
+      padding: 4px 8px;
+      border: none;
+      border-radius: 4px;
+      background: #007bff;
+      color: #fff;
+      font-size: .875rem;
+      cursor: pointer;
+      transition: background 0.2s;
+      margin: 8px 0px;
+    }
+    /* Text content */
+    .notif-content {
+        min-height: 65px;
+    }
+    .notif-content small {
+      color: #888;
+      font-size: .75rem;
+    }
+  </style>
+</head>
+<body>
+  <h2>Your Notifications</h2>
+  <div id="notifications">
+   
+    <div id="notifications-container">
+      <!-- Dynamic content will be inserted here -->
+    </div>
+  </div>
+
+  <!-- Footer/includes… -->
+  <%- include('../components/footer-structure') %>
+  <%- include('../components/loader') %>
+  <%- include('../components/setupjs') %>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+    const container = document.getElementById('notifications-container');
+    
+    try {
+      // Fetch notifications data
+      const response = await fetch('/user/api/notifications');
+      const { notifications } = await response.json();
+      console.log(notifications)
+
+      // Create DOM elements for all notifications
+      const notificationElements = await Promise.all(
+        notifications.map(async notification => {
+          return await createNotificationElement(notification);
+        })
+      );
+
+      // Append all elements at once
+      notificationElements.forEach(element => {
+        container.appendChild(element);
+      });
+    } catch (error) {
+      console.error('Error loading notifications:', error);
+      container.innerHTML = '<p>Error loading notifications</p>';
+    }
+  });
+
+  async function createNotificationElement(notification) {
+    const li = document.createElement('li');
+    li.className = notification.status === 'Unread' ? 'unread' : '';
+
+    // Media container
+    const mediaDiv = document.createElement('div');
+    mediaDiv.className = 'notif-media';
+
+    try {
+      if (notification.img === "Follow Button required") {
+        const button = document.createElement('button');
+        button.textContent = 'Follow';
+        mediaDiv.appendChild(button);
+      } else {
+        // Fetch media info
+        const mediaRes = await fetch(`/user/notification/image?fileId=${notification.img}`);
+        const mediaData = await mediaRes.json();
+
+        if (mediaData.type === 'video') {
+          const video = document.createElement('video');
+          video.src = mediaData.url;
+          video.controls = true;
+          video.style.width = '50px';
+          video.style.height = '50px';
+          mediaDiv.appendChild(video);
+        } else {
+          const img = document.createElement('img');
+          img.src = mediaData.url;
+          img.alt = 'Notification media';
+          img.style.width = '50px';
+          img.style.height = '50px';
+          mediaDiv.appendChild(img);
+        }
+        if (mediaData.type === 'video' || mediaData.type === 'image') {
+           li.addEventListener('click', () => {
+             window.location.href = `/post/details/${notification.postId}`;
+           });
+         }
+
+      }
+    } catch (error) {
+      console.error('Error loading media:', error);
+      const errorSpan = document.createElement('span');
+      errorSpan.textContent = 'Media not available';
+      mediaDiv.appendChild(errorSpan);
+    }
+
+    // Content container
+    const contentDiv = document.createElement('div');
+    contentDiv.className = 'notif-content';
+    contentDiv.innerHTML = `
+      <p>${notification.message}</p>
+      <small>${timeAgo(notification.time)}</small>
+    `;
+
+    li.appendChild(mediaDiv);
+    li.appendChild(contentDiv);
+    return li;}
+    
+    function InitializeFooter(){
+    
+    document.getElementById('notification-btn').innerHTML=` <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="24px">
+          <g data-name="39-Alarm">
+            <path d="m31.89 27.55-2-4A1 1 0 0 0 29 23h-1v-8a12.31 12.31 0 0 0-9-11.8V2a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v1.2A12.31 12.31 0 0 0 4 15v8H3a1 1 0 0 0-.89.55l-2 4A1 1 0 0 0 1 29h11.14a4 4 0 0 0 7.72 0H31a1 1 0 0 0 .89-1.45zM2.62 27l1-2H23v-2H6v-8a10.25 10.25 0 0 1 8.18-10A1 1 0 0 0 15 4V2h2v2a1 1 0 0 0 .82 1A10.25 10.25 0 0 1 26 15v9a1 1 0 0 0 1 1h1.38l1 2z" fill="#ffffff" />
+            <path d="M9 14h2c0-3.83 2.7-4 3-4V8c-1.73 0-5 1.25-5 6z" fill="#ffffff" />
+          </g></svg>  `
+
+         document.getElementById('home-btn').addEventListener('click', function() {
+    // Show the loading overlay
+    document.getElementById('loading-overlay').style.display = 'flex';
+    setTimeout(function() {
+      window.location.href = '/';
+    }, 750);  // 100ms delay so the overlay appears
+  });
+
+         if(isLoggedIn){
+
+          
+          document.getElementById('search-btn').addEventListener('click', function() {
+    // Show the loading overlay
+    document.getElementById('loading-overlay').style.display = 'flex';
+    setTimeout(function() {
+      window.location.href = '/user/search';
+    }, 750);  // 100ms delay so the overlay appears
+  });
+
+
+  document.getElementById('chat-btn').addEventListener('click', function() {
+    // Show the loading overlay
+    document.getElementById('loading-overlay').style.display = 'flex';
+    setTimeout(function() {
+      window.location.href = '/chats';
+    }, 750);  // 100ms delay so the overlay appears
+  });
+
+  document.getElementById('notification-btn').addEventListener('click', function() {
+    // Show the loading overlay
+    document.getElementById('loading-overlay').style.display = 'flex';
+    setTimeout(function() {
+      window.location.href = '/user/notifications';
+    }, 750);  // 100ms delay so the overlay appears
+  });
+
+
+ }
+
+    }
+
+     //Time Shower
+ function timeAgo(isoDate) {
+  const timeUnits = [
+    { label: "year", seconds: 31536000 },
+    { label: "month", seconds: 2592000 },
+    { label: "day", seconds: 86400 },
+    { label: "hr", seconds: 3600 },
+    { label: "minute", seconds: 60 }
+  ];
+  const now = new Date();
+  const past = new Date(isoDate);
+  const diffInSeconds = Math.floor((now - past) / 1000);
+  for (let unit of timeUnits) {
+    const interval = Math.floor(diffInSeconds / unit.seconds);
+    if (interval >= 1) {
+      return `${interval} ${unit.label}${interval > 1 ? "s" : ""} ago`;
+    }
+  }
+  return "just now";
+}
+    InitializeFooter();
+  </script>
+</body>
+</html>
+
