@@ -425,19 +425,29 @@ async function fetchAndRenderPosts(tag = "") {
     }
 
   
-    function CheckUpdates() {
- if(isLoggedIn){
-  function CheckUpdates() {
-  // now this is valid JS: a single-quoted string literal
-  const notifications = JSON.parse('<%- JSON.stringify(user.notifications) %>');
-  console.log(notifications);
+     function CheckUpdates() {
+  if (isLoggedIn) {
+    console.log("Logged in");
 
-  const hasUnread = notifications.some(n => n.status === 'Unread');
-  const el = document.getElementById('NewNotify');
-  el.style.display = hasUnread ? 'block' : 'none';
-}
+    let notifications = null;
+    try {
+      // Try parsing user notifications if available
+      const raw = '<%- JSON.stringify(user?.notifications || null) %>';
+      notifications = JSON.parse(raw);
+    } catch (e) {
+      console.error("Failed to parse notifications:", e);
+      notifications = null;
+    }
 
- }
+    const hasUnread = Array.isArray(notifications)
+      ? notifications.some(n => n.status === 'Unread')
+      : false;
+
+    const el = document.getElementById('NewNotify');
+    if (el) {
+      el.style.display = hasUnread ? 'block' : 'none';
+    }
+  }
 }
 
  </script>
