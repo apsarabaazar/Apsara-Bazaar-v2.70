@@ -426,6 +426,8 @@ async function fetchAndRenderPosts(tag = "") {
 
   
     function CheckUpdates() {
+ if(isLoggedIn){
+  function CheckUpdates() {
   // now this is valid JS: a single-quoted string literal
   const notifications = JSON.parse('<%- JSON.stringify(user.notifications) %>');
   console.log(notifications);
@@ -433,6 +435,9 @@ async function fetchAndRenderPosts(tag = "") {
   const hasUnread = notifications.some(n => n.status === 'Unread');
   const el = document.getElementById('NewNotify');
   el.style.display = hasUnread ? 'block' : 'none';
+}
+
+ }
 }
 
  </script>
