@@ -518,8 +518,10 @@ async function getFilePathWithToken(effectiveFileId, botToken) {
 router.get("/details/:postId", async (req, res) => {
   try {
     // 1. Auth check
-    if (!req.session.user) return res.redirect("/login");
-    const user = await User.findById(req.session.user._id).lean();
+    // if (!req.session.user) return res.redirect("/login");
+    let user=null;
+    if(req.session.user)
+    user = await User.findById(req.session.user._id).lean();
 
     // 2. Load post
     const { postId } = req.params;
