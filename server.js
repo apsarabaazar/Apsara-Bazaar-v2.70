@@ -113,17 +113,50 @@ app.use("/user", userRoutes)
 
 // Render the index page immediately with basic data
 app.get("/", async (req, res) => {
+  
+  const identifier = req.session.user?.email || req.sessionID;
+  updateUserActivity(identifier);
+
   let user = null;
   if (req.session.user) {
     user = await User.findById(req.session.user._id).lean().exec();
-    updateUserActivity(req.session.user.email);
   }
 
-  let nuser = getActiveUserCount();
+  const nuser = getActiveUserCount();
   res.render("index", { user, nuser });
 });
 
-const activeUsers = new Map(); // Stores userID -> lastActiveTimestamp
+
+
+// Map to track last-active timestamp by identifier (email or sessionID)
+const activeUsers = new Map();
+const INACTIVITY_THRESHOLD = 30 * 60 * 1000; // 30 minutes
+
+// Update (or add) user activity
+function updateUserActivity(identifier) {
+  if (!identifier) return;
+  activeUsers.set(identifier, Date.now());
+}
+
+// Remove users inactive beyond threshold
+function removeInactiveUsers() {
+  const now = Date.now();
+  for (const [id, lastActive] of activeUsers.entries()) {
+    if (now - lastActive > INACTIVITY_THRESHOLD) {
+      activeUsers.delete(id);
+    }
+  }
+}
+
+// Schedule periodic cleanup every 10 minutes
+setInterval(removeInactiveUsers, 10 * 60 * 1000);
+
+// Get count of currently active users
+function getActiveUserCount() {
+  return activeUsers.size;
+}
+
+
 
 async function updateGoldMembers() {
   try {
@@ -933,35 +966,6 @@ const HOST = '::'; // Listen on all IPv6 addresses
 const server = app.listen(PORT, HOST, () => {
   console.log(`Server running on http://[${HOST}]:${PORT}`);
 });
-
-
-
-
-// Function to update user activity
-const updateUserActivity = (email) => {
-  if (email) {
-    activeUsers.set(email, Date.now());
-  }
-};
-
-// Function to clean up inactive users (not active for 30 minutes)
-const removeInactiveUsers = () => {
-  const now = Date.now();
-  const inactiveThreshold = 30 * 60 * 1000; // 30 minutes
-
-  for (const [email, lastActive] of activeUsers.entries()) {
-    if (now - lastActive > inactiveThreshold) {
-      activeUsers.delete(email); // Use the 'email' variable from the loop
-    }
-  }
-};
-
-// Schedule cleanup every 10 minutes
-setInterval(removeInactiveUsers, 10 * 60 * 1000);
-
-// Function to get the current active user count
-const getActiveUserCount = () => activeUsers.size;
-
 
 
 const io = socketIo(server);
