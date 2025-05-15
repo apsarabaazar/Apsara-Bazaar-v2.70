@@ -113,7 +113,7 @@ app.use("/user", userRoutes)
 
 // Render the index page immediately with basic data
 app.get("/", async (req, res) => {
-  
+
   const identifier = req.session.user?.email || req.sessionID;
   updateUserActivity(identifier);
 
@@ -973,6 +973,10 @@ const users = new Map(); // To keep track of online users in different rooms
 
 
 app.get("/chats", async (req, res) => {
+  // Check if user is authenticated
+  if (!req.session.user) {
+    return res.status(401).redirect("/auth/login"); // Or handle differently
+}
   try {
     let user = null;
     let rooms = []; // Initialize rooms to an empty array
