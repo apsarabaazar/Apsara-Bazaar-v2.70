@@ -540,7 +540,7 @@ router.get('/rank', async (req, res) => {
 
 router.get('/search', (req, res) => {
   if (!req.session.user) {
-    return res.redirect('/login');
+    return res.redirect('/auth/login');
   }
   res.render('features/search',{ user: req.session.user});
 });
@@ -637,7 +637,7 @@ router.get('/file', async (req, res) => {
 
 router.get('/notifications', (req, res) => {
     if (!req.session.user) {
-      return res.redirect('/login');
+      return res.redirect('/auth/login');
     }
     res.render('features/notifications',{ user: req.session.user});
 });
@@ -688,7 +688,6 @@ router.get('/notification/image', async (req, res) => {
         const filePath = response.data.result.file_path;
         const ext = filePath.split('.').pop().toLowerCase();
         const type = ['mp4', 'mov', 'avi'].includes(ext) ? 'video' : 'image';
-        console.log(type)
         return res.json({
           type,
           url: `https://api.telegram.org/file/bot${process.env.TELEGRAM_BOT_TOKEN}/${filePath}`
