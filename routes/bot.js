@@ -17,8 +17,8 @@ const upload = multer().array('images', 10);
 const cron = require('node-cron');
 
 
-const bot = new TelegramBot(TELEGRAM_BOT_TOKEN, { polling: true });
-//const bot = new TelegramBot(TELEGRAM_BOT_TOKEN);
+//const bot = new TelegramBot(TELEGRAM_BOT_TOKEN, { polling: true });
+const bot = new TelegramBot(TELEGRAM_BOT_TOKEN);
 
 const Admins = ["trickytejas", "raghav_0308"];
 
