@@ -17,8 +17,8 @@ const upload = multer().array('images', 10);
 const cron = require('node-cron');
 
 
-//const bot = new TelegramBot(TELEGRAM_BOT_TOKEN, { polling: true });
-const bot = new TelegramBot(TELEGRAM_BOT_TOKEN);
+const bot = new TelegramBot(TELEGRAM_BOT_TOKEN, { polling: true });
+//const bot = new TelegramBot(TELEGRAM_BOT_TOKEN);
 
 const Admins = ["trickytejas", "raghav_0308"];
 
@@ -368,6 +368,7 @@ const { chromium } = require('playwright');
 
 
 //Telegram Fetch-----------------------------------------------------------------------------------------------------------------------------
+
 bot.onText(/\/fetch/, async (msg) => {
     const chatId = msg.chat.id;
     const userUsername = msg.from.username;
@@ -438,15 +439,20 @@ const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 bot.onText(/\/find/, async (msg) => {
   const chatId = msg.chat.id;
+  bot.sendMessage(chatId, "Processing :::");
   
   try {
     await bot.sendChatAction(chatId, 'typing');
     
     const subreddits = [
       'BollywoodInBikinis',
-      'Actress_and_stuff',
+      'IndianCelebScenes',
+      'DesiCelebHub',
       'actressheaven',
-      'IndianCelebFappers'
+      'CelebrityEconomy',
+      'IndianCelebFappers',
+      'MILFsOfBollywood',
+      'CelebEcstasy'
     ];
 
     let allPosts = [];
@@ -457,7 +463,7 @@ bot.onText(/\/find/, async (msg) => {
     for (const subreddit of subreddits) {
       try {
         const response = await axios.get(
-          `https://www.reddit.com/r/${subreddit}/hot.json?limit=15`,
+          `https://www.reddit.com/r/${subreddit}/new.json?limit=15`,
           {
             headers: { 
               'User-Agent': 'YourBotName/1.0 (by YourRedditUsername)',
