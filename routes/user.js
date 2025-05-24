@@ -187,7 +187,7 @@ router.get('/profile/:username', async (req, res) => {
 
 
         // Render the my-profile.ejs view with the user's details
-        res.render('profile', { profileuser:profileuserObject ,user});
+        res.render('profile', { profileuser:profileuserObject ,user,guestUser:req.session.guest});
     } catch (error) {
         console.error("Error fetching user profile:", error);
         res.status(500).send("Server error");
@@ -378,7 +378,7 @@ router.get("/saved-posts", async (req, res) => {
             return res.status(401).redirect("/auth/login"); // Or handle differently
         }
         user = await User.findById(req.session.user._id).lean().exec();
-        res.render("features/user-personalised-posts",{type:"Saved",user});
+        res.render("features/user-personalised-posts",{type:"Saved",user,guestUser:req.session.guest});
     } catch (error) {
         console.error("Error fetching User Saves", error);
         res.status(500).send("Internal Server Error");
@@ -392,7 +392,7 @@ router.get("/liked-posts", async (req, res) => {
             return res.status(401).redirect("/auth/login"); // Or handle differently
         }
         user = await User.findById(req.session.user._id).lean().exec();
-        res.render("features/user-personalised-posts",{type:"Liked",user});
+        res.render("features/user-personalised-posts",{type:"Liked",user,guestUser:req.session.guest});
     } catch (error) {
         console.error("Error fetching User Saves", error);
         res.status(500).send("Internal Server Error");
