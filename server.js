@@ -805,7 +805,7 @@ profileuserObject.badge=badge;
 
 
 
-  res.render("profile", { user,profileuser:profileuserObject });
+  res.render("profile", { user,profileuser:profileuserObject,guestUser:req.session.guest });
 });
 
 // Middleware to check if user is logged in
